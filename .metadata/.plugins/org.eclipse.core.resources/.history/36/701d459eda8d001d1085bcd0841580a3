@@ -1,0 +1,89 @@
+package skojarzenia;
+
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+import java.util.List;
+import java.util.ArrayList;
+
+public class ClickGame extends JFrame implements ActionListener {
+    // Liczba kwadratów na ekranie
+    private int numSquares = 5;
+    // Liczba zdobytych punktów
+    private int score = 0;
+    // Czas trwania poziomu (w sekundach)
+    private int levelTime = 30;
+    // Timer do odliczania czasu poziomu
+    private Timer timer;
+    // Lista kwadratów do kliknięcia
+    private List<JButton> squares;
+    // Pole tekstowe do wyświetlania wyniku
+    private JTextField scoreField;
+
+    public ClickGame() {
+        super("Click Game");
+        setLayout(new FlowLayout());
+        setSize(300, 300);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        // Utwórz przyciski kwadratów i dodaj je do listy
+        squares = new ArrayList<>();
+        for (int i = 0; i < numSquares; i++) {
+            JButton b = new JButton("Click me!");
+            b.setPreferredSize(new Dimension(50, 50));
+            b.addActionListener(this);
+            squares.add(b);
+            add(b);
+        }
+        // Utwórz pole tekstowe do wyświetlania wyniku
+        scoreField = new JTextField(10);
+        scoreField.setEditable(false);
+        add(scoreField);
+        // Utwórz timer i rozpocznij odliczanie czasu
+        timer = new Timer(levelTime * 1000, this);
+        timer.start();
+        setVisible(true);
+    }
+    
+    public void actionPerformed(ActionEvent e) {
+        // Jeśli został kliknięty jakiś kwadrat...
+        if (squares.contains(e.getSource())) {
+            // ...zwiększ wynik...
+            score++;
+            // ...i usuń kwadrat z listy
+            squares.remove(e.getSource());
+            remove((JButton)e.getSource());
+        }
+        // Jeśli został wywołany timer...
+        if (e.getSource() == timer) {
+            // ...zatrzymaj timer...
+            timer.stop();
+            // ...i sprawdź, czy gracz przeszedł do następnego poziomu
+            if (score >= numSquares) {
+                // Jeśli tak, to zwiększ liczbę kwadratów i czas na poziomie...
+                numSquares += 5;
+                levelTime += 5;
+                // ...utwórz nowe kwadraty...
+                for (int i = 0; i < numSquares; i++) {
+                    JButton b = new JButton("Click me!");
+                    b.setPreferredSize(new Dimension(50, 50));
+                    b.addActionListener(this);
+                    squares.add(b);
+                    add(b);
+                }
+                // ...i zresetuj wynik
+                score = 0;
+            } else {
+            	 // Jeśli gracz nie przeszedł do następnego poziomu, wyświetl komunikat o porażce
+                JOptionPane.showMessageDialog(this, "Przegrałeś! Zdobyłeś " + score + " punktów.");
+                // Zakończ grę
+                System.exit(0);
+            }
+        }
+        // Aktualizuj pole tekstowe z wynikiem
+        scoreField.setText("Wynik: " + score);
+    }
+
+    public static void main(String[] args) {
+        new ClickGame();
+    }
+}

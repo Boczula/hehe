@@ -1,0 +1,49 @@
+package skojarzenia;
+
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+import java.util.List;
+import java.util.ArrayList;
+
+public class ClickGame extends JFrame implements ActionListener {
+    // Liczba kwadratów na ekranie
+    private int numSquares = 5;
+    // Liczba zdobytych punktów
+    private int score = 0;
+    // Czas trwania poziomu (w sekundach)
+    private int levelTime = 30;
+    // Timer do odliczania czasu poziomu
+    private Timer timer;
+    // Lista kwadratów do kliknięcia
+    private List<JButton> squares;
+    // Pole tekstowe do wyświetlania wyniku
+    private JTextField scoreField;
+
+    public ClickGame() {
+        super("Click Game");
+        setLayout(new FlowLayout());
+        setSize(300, 300);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        // Utwórz przyciski kwadratów i dodaj je do listy
+        squares = new ArrayList<>();
+        for (int i = 0; i < numSquares; i++) {
+            JButton b = new JButton("Click me!");
+            b.setPreferredSize(new Dimension(50, 50));
+            b.addActionListener(this);
+            squares.add(b);
+            add(b);
+        }
+        // Utwórz pole tekstowe do wyświetlania wyniku
+        scoreField = new JTextField(10);
+        scoreField.setEditable(false);
+        add(scoreField);
+        // Utwórz timer i rozpocznij odliczanie czasu
+        timer = new Timer(levelTime * 1000, this);
+        timer.start();
+        setVisible(true);
+    }
+    
+    
+    
+}

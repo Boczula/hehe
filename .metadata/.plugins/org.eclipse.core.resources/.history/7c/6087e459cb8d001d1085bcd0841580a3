@@ -1,0 +1,97 @@
+package skojarzenia;
+
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+import java.util.List;
+import java.util.ArrayList;
+
+public class ClickGame extends JFrame implements ActionListener {
+    // Liczba obiektów na ekranie
+    private int numObjects = 5;
+    // Liczba zdobytych punktów
+    private int score = 0;
+    // Czas trwania poziomu (w sekundach)
+    private int levelTime = 30;
+    // Timer do odliczania czasu poziomu
+    private Timer timer;
+    // Lista obiektów do kliknięcia
+    private List<JButton> objects;
+    // Pole tekstowe do wyświetlania wyniku
+    private JTextField scoreField;
+
+public ClickGame() {
+    super("Click Game");
+    setLayout(new FlowLayout());
+    setSize(300, 300);
+    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    // Utwórz przyciski obiektów i dodaj je do listy
+    objects = new ArrayList<>();
+    for (int i = 0; i < numObjects; i++) {
+        JButton b = new JButton("Click me!");
+        b.addActionListener(this);
+        objects.add(b);
+        add(b);
+    }
+    // Utwórz pole tekstowe do wyświetlania wyniku
+    scoreField = new JTextField(10);
+    scoreField.setEditable(false);
+    add(scoreField);
+    // Utwórz timer i rozpocznij odliczanie czasu
+    timer = new Timer(levelTime * 1000, this);
+    timer.start();
+    setVisible(true);
+    }
+
+    public void actionPerformed(ActionEvent e) {
+        // Jeśli został kliknięty jakiś obiekt...
+        if (objects.contains(e.getSource())) {
+            // ...zwiększ wynik...
+            score++;
+            // ...i usuń obiekt z listy
+            objects.remove(e.getSource());
+        }
+        // Jeśli został wywołany timer...
+        if (e.getSource() == timer) {
+            // ...zatrzymaj timer...
+            timer.stop();
+            // ...i sprawdź, czy gracz przeszedł do następnego poziomu
+            if (score >= numObjects) {
+                // Gracz przeszedł do następnego poziomu
+            	numObjects++;
+                // Usuń poprzednie obiekty z ekranu
+                for (JButton b : objects) {
+                    remove(b);
+                }
+                // Utwórz nowe obiekty i dodaj je do listy
+                objects.clear();
+                for (int i = 0; i < numObjects; i++) {
+                    JButton b = new JButton("Click me!");
+                    b.addActionListener(this);
+                    objects.add(b);
+                    add(b);
+                }
+                // Zresetuj wynik
+                score = 0;
+                // Odśwież ekran
+                repaint();
+                // Rośnijąca trudność oznacza krótszy czas na każdym poziomie
+                levelTime--;
+                // Utwórz nowy timer i rozpocznij odliczanie
+                timer = new Timer(levelTime * 1000, this);
+                timer.start();
+            } else {
+                // Gracz przegrał - wyświetl komunikat
+                JOptionPane.showMessageDialog(this, "You lost! Your score: " + score);
+                // Zakończ grę
+                System.exit(0);
+            }
+        }
+        // Uaktualnij pole tekstowe z wynikiem
+        scoreField.setText("Score: " + score);
+    }
+
+    public static void main(String[] args) {
+        new ClickGame();
+    }
+}

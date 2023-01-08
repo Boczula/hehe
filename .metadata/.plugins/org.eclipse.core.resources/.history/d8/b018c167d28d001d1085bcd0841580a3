@@ -1,0 +1,58 @@
+package skojarzenia;
+
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+
+public class DistractionGame extends JFrame implements ActionListener {
+    // Szerokość i wysokość okna
+    private static final int WIDTH = 300;
+    private static final int HEIGHT = 300;
+    // Liczba kulek na ekranie
+    private static final int NUM_BALLS = 20;
+    // Szybkość kulek (w pikselach na sekundę)
+    private static final int BALL_SPEED = 50;
+    // Średnica kulek
+    private static final int BALL_DIAMETER = 50;
+    // Timer do odświeżania ekranu
+    private Timer timer;
+    // Kule na ekranie
+    private Ball[] balls;
+    // Generator liczb losowych
+    private Random rand = new Random();
+
+    public DistractionGame() {
+        super("Distraction Game");
+        setSize(WIDTH, HEIGHT);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLayout(null);
+ // Klasa reprezentująca pojedynczą kulę
+    private class Ball extends JLabel {
+        // Współrzędne kulek
+        private int x, y;
+        // Prędkości kulek (w pikselach na sekundę)
+        private int dx, dy;
+
+        public Ball(int x, int y, int dx, int dy) {
+            this.x = x;
+            this.y = y;
+            this.dx = dx;
+            this.dy = dy;
+            setOpaque(true);
+            setBackground(Color.BLUE);
+            setBounds(x, y, BALL_DIAMETER, BALL_DIAMETER);
+        }
+
+        public void move(int width, int height) {
+            x += dx;
+            y += dy;
+            if (x < 0 || x + BALL_DIAMETER > width) {
+                dx = -dx;
+            }
+            if (y < 0 || y + BALL_DIAMETER > height) {
+                dy = -dy;
+            }
+            setBounds(x, y, BALL_DIAMETER, BALL_DIAMETER);
+        }
+    }
+}
